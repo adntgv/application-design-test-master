@@ -31,6 +31,6 @@ type RoomUsecase interface {
 }
 
 type RoomRepository interface {
-	GetRoomBookingDaysBetween(ctx context.Context, room *RoomDomain, from time.Time, to time.Time) ([]time.Time, error)
+	GetRoomBookingDaysBetween(ctx context.Context, room *RoomDomain, from time.Time, to time.Time) ([]string, error)
 	BookRoomForDaysBetween(ctx context.Context, room *RoomDomain, from time.Time, to time.Time) error
 }

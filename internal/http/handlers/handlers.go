@@ -24,9 +24,16 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	var newOrderRequest requests.CreateOrderRequest
 	json.NewDecoder(r.Body).Decode(&newOrderRequest)
 
-	room := newOrderRequest.ToRoom()
+	if err := newOrderRequest.Validate(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	if err := h.roomUsecase.Book(r.Context(), room, newOrderRequest.From, newOrderRequest.To); err != nil {
+	room := newOrderRequest.ToRoom()
+	from := newOrderRequest.GetFrom()
+	to := newOrderRequest.GetTo()
+
+	if err := h.roomUsecase.Book(r.Context(), room, from, to); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		log.Printf("Failed to book room \"%v\": %v", room, err)
 		return

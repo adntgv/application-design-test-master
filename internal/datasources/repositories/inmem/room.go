@@ -38,7 +38,7 @@ func (i *inmemRoomRepository) BookRoomForDaysBetween(ctx context.Context, room *
 }
 
 // GetRoomBookingDaysBetween implements domains.RoomRepository.
-func (i *inmemRoomRepository) GetRoomBookingDaysBetween(ctx context.Context, room *domains.RoomDomain, from time.Time, to time.Time) ([]time.Time, error) {
+func (i *inmemRoomRepository) GetRoomBookingDaysBetween(ctx context.Context, room *domains.RoomDomain, from time.Time, to time.Time) ([]string, error) {
 	if err := i.exists(room); err != nil {
 		return nil, err
 	}
@@ -46,11 +46,11 @@ func (i *inmemRoomRepository) GetRoomBookingDaysBetween(ctx context.Context, roo
 	key := getRoomKey(room)
 	bookedDays := i.bookingDays[key]
 
-	result := make([]time.Time, 0)
+	result := make([]string, 0)
 
 	for _, date := range bookedDays {
 		if date.After(from) && date.Before(to) {
-			result = append(result, date)
+			result = append(result, date.Format(time.RFC822))
 		}
 	}
 
