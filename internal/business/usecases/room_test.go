@@ -71,11 +71,13 @@ func Test_roomUsecase_Book(t *testing.T) {
 			args: args{
 				ctx:  ctx,
 				room: room,
-				from: time.Now(),
-				to:   time.Now().Add(48 * time.Hour),
+				// Assuming you want to test a specific date range, replace YYYY-MM-DD with actual dates
+				from: func(s string) time.Time { ts, _ := time.Parse("2006-01-02", s); return ts }("2023-04-09"),
+				to:   func(s string) time.Time { ts, _ := time.Parse("2006-01-02", s); return ts }("2023-04-11"),
 			},
 			setup: func(repo *mockRoomRepository) {
 				repo.getRoomBookingDaysBetweenFunc = func(ctx context.Context, room *domains.RoomDomain, from time.Time, to time.Time) ([]string, error) {
+					// This simulates that the room is unavailable on 2023-04-10
 					return []string{"2023-04-10"}, nil
 				}
 			},
