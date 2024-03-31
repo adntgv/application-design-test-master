@@ -13,7 +13,11 @@ type roomUsecase struct {
 
 // Book implements domains.RoomUsecase.
 func (r *roomUsecase) Book(ctx context.Context, room *domains.RoomDomain, from time.Time, to time.Time) error {
-	unavailableDates := r.repo.GetRoomBookingDaysBetween(ctx, room, from, to)
+	unavailableDates, err := r.repo.GetRoomBookingDaysBetween(ctx, room, from, to)
+	if err != nil {
+		return fmt.Errorf("room \"%v\" cannot be booked: %v", room, err)
+	}
+
 	if len(unavailableDates) > 0 {
 		return fmt.Errorf("room \"%v\" cannot be booked, following dates are unavailable: %v", room, unavailableDates)
 	}
